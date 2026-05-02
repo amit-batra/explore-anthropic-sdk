@@ -1,4 +1,4 @@
-"""Anthropic SDK example: send a message and print the full response as indented JSON."""
+"""Anthropic SDK example: Simulate a multi-turn conversation with the LLM, and print the full response as indented JSON."""
 
 import json
 import os
@@ -13,16 +13,23 @@ def format_response(message: Message) -> str:
     return json.dumps(message.to_dict(), indent=2)
 
 def main() -> None:
-    """Send a hardcoded prompt to the model and print the full response object."""
+    """Send a simulated multi-turn conversation to the model and print the full response object."""
     load_dotenv()  # populates ANTHROPIC_API_KEY (and optionally ANTHROPIC_BASE_URL) from .env
     client: Anthropic = Anthropic()
 
     message: Message = client.messages.create(
         model=os.environ["MODEL_NAME"],  # set MODEL_NAME in .env
         max_tokens=1024,
-        messages=[{"role": "user", "content": "Hello, Gemma!"}]
+        messages=[
+            {"role": "user", "content": "Hello, Gemma!"},
+            {"role": "assistant", "content": "Hello! How can I assist you today?"},
+            {"role": "user", "content": "Can you tell me a joke about football?"}
+        ]
     )
+    print("Full response:")
     print(format_response(message))
+    print("\nModel's reply:")
+    print(message.content[0].text)
 
 if __name__ == "__main__":
     main()
